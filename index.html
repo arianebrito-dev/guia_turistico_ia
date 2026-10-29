@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Viagens IA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Coluna Esquerda: Mapa -->
+        <aside class="left-sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-plane-departure"></i>
+                <h2>Travel Agent AI</h2>
+            </div>
+            <div class="map-container">
+                <h3><i class="fa-solid fa-earth-americas"></i> Radar de Destino</h3>
+                <div id="map"></div>
+            </div>
+        </aside>
+
+        <!-- Coluna Central: Chat Interativo -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <h2>Planejador de Roteiros</h2>
+                <p>Seu guia turístico especialista conectado à web</p>
+            </header>
+            
+            <div class="chat-box" id="chat-box">
+                <div class="message ai-message">
+                    <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="content">
+                        Olá! Sou seu agente de viagens conectado em tempo real. Qual é o destino dos seus sonhos?
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Ex: Quero viajar para a Suíça..." autocomplete="off">
+                <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </main>
+
+        <!-- Coluna Direita: Widgets Dinâmicos -->
+        <aside class="right-sidebar">
+            <div class="widget">
+                <h3><i class="fa-solid fa-dollar-sign"></i> Cotação ao Vivo</h3>
+                <div class="widget-content exchange" id="exchange-widget">
+                    <p style="font-size:13px; color:#666;">Carregando cotação real...</p>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h3><i class="fa-solid fa-newspaper"></i> Alertas Reais do Destino</h3>
+                <div class="widget-content news" id="news-widget">
+                    <p style="font-size:13px; color:#666;">Aguardando destino para buscar dados na web...</p>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h3><i class="fa-solid fa-tags"></i> Voos na Internet</h3>
+                <div class="widget-content promos" id="promos-widget">
+                    <p style="font-size:13px; color:#666;">Aguardando destino para estimar voos...</p>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
