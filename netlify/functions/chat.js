@@ -1,5 +1,4 @@
 exports.handler = async function(event, context) {
-    // Permite apenas requisições POST
     if (event.httpMethod !== "POST") {
         return { statusCode: 405, body: "Method Not Allowed" };
     }
@@ -7,14 +6,9 @@ exports.handler = async function(event, context) {
     try {
         const body = JSON.parse(event.body);
         const userText = body.userText;
-
-        // A chave é puxada das variáveis de ambiente do Netlify
-        const apiKey = process.env.GEMINI_API_KEY;
-
-        if (!apiKey) {
-            console.error("GEMINI_API_KEY não está definida no Netlify.");
-            throw new Error("Chave da API ausente");
-        }
+        
+        // Renomeie esta variável no Netlify para corresponder ao seu novo provedor (ex: OPENROUTER_API_KEY)
+        const apiKey = process.env.API_KEY;
 
         const systemPrompt = `
         Você é um guia turístico e um agente de viagens virtual de ponta.
@@ -24,28 +18,34 @@ exports.handler = async function(event, context) {
         Organize suas respostas em tópicos e tabelas didáticas.
         `;
 
-        const response = await fetch(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-goog-api-key": apiKey
-                },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: systemPrompt + "\n\nPedido: " + userText }] }]
-                })
-            }
-        );
+        // ESCOLHA A URL CORRETA PARA A SUA CHAVE:
+        // Se for OpenRouter: 'https://openrouter.ai/api/v1/chat/completions'
+        // Se for OpenAI direto: 'https://api.openai.com/v1/chat/completions'
+        // Se continuar na Groq: 'https://api.groq.com/openai/v1/chat/completions' (Mas a Groq rejeitará o modelo openai/gpt-oss-120b)
+        
+        const apiUrl = 'https://openrouter.ai/api/v1/chat/completions'; // Atualize aqui se necessário
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: "openia/gpt-oss-120b", // Velocidade e modelo alterados conforme solicitado
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: userText }
+                ]
+            })
+        });
 
         if (!response.ok) {
-            const errorBody = await response.text();
-            console.error("Gemini erro:", response.status, errorBody);
-            throw new Error(`Erro na API do Gemini: ${response.status}`);
+            throw new Error(`Erro na API (${response.status}): Verifique se o provedor suporta este modelo.`);
         }
 
         const data = await response.json();
-        const aiText = data.candidates[0].content.parts[0].text;
+        const aiText = data.choices[0].message.content;
 
         return {
             statusCode: 200,
@@ -60,7 +60,6 @@ exports.handler = async function(event, context) {
         };
     }
 };
-
 
 
 // exports.handler = async function(event, context) {
